@@ -6,9 +6,12 @@ const monogoose = require('mongoose');
 const flash = require('connect-flash');
 const session =require('express-session');
 const passport = require('passport');
+const path = require('path');
 
 
 const app=express();
+//static middleware
+app.use(express.static(path.join(__dirname, 'public')));
  //passport config
  require('./config/passport')(passport);
 
@@ -47,9 +50,20 @@ app.use((req,res,next)=>{
     next();
 
 })
+app.use((req,res,next)=>{
+    res.locals.user = req.user;
+    next();
+})
+
+//to render UI according to user logged in or not
+app.use((req,res,next)=>{
+    res.locals.isAuthenticated = req.isAuthenticated();
+    next();
+});
 //Routes 
 app.use('/',require('./routes/index'));
 app.use('/users',require('./routes/users'));
+app.use('/meals',require('./routes/meals'));
 
 //Body Parser
 app.use(bodyParser.urlencoded({extended:true}));

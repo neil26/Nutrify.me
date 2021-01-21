@@ -72,17 +72,6 @@ router.post('/register',ensureNotAuthenticated,(req,res)=>{
                        //save User to Database
                        newUser.save()
                        .then(user => {
-                        const payLoad = {
-                            user:{
-                                id :user.id
-                            }
-                        }
-                        var token = jwt.sign(payLoad,'secretkey',(err,token)=>{
-                            if(err) throw err;
-                            res.json({
-                                token
-                            })
-                        });
                         req.flash('success_msg','You are now registered and can log in');   
                         res.redirect('/users/login')
                         }) 
@@ -94,10 +83,7 @@ router.post('/register',ensureNotAuthenticated,(req,res)=>{
     }
 });
 
-// New Meal Page
-router.get('/AddNewMeal',(req,res)=>{
-    res.send("Add New Meal Page!");
-})
+
 //Login Handler
 router.post('/login',ensureNotAuthenticated,(req,res,next)=>{
     passport.authenticate('local',{
@@ -109,6 +95,7 @@ router.post('/login',ensureNotAuthenticated,(req,res,next)=>{
 
 router.get('/logout',(req,res) =>{
    req.logout();
+  
    req.flash('success_msg','You are successfuly Logged out');
    res.redirect('/users/login');  
 });
